@@ -1,2 +1,2 @@
-# paystack-go-sdk
+i# paystack-go-sdk
 Unofficial Go SDK for Paystack.com
