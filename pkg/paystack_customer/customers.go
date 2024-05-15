@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -179,6 +180,94 @@ func ValidateCustomer(client *paystack_client.Client, customerCode string, reqDa
 
 	// Decode the response body
 	var respData ValidateCustomerResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// SetCustomerRiskAction whitelists or blacklists a customer on your integration.
+// It takes the client and request data as arguments and returns the risk action response.
+func SetCustomerRiskAction(client *paystack_client.Client, reqData SetCustomerRiskActionRequest) (*SetCustomerRiskActionResponse, error) {
+	url := "https://api.paystack.co/customer/set_risk_action"
+
+	// Marshal the request body to JSON
+	reqBody, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	// Log the raw response body for debugging purposes
+	fmt.Printf("Raw response body: %s\n", respBody)
+
+	// Check if the response body is empty
+	if len(respBody) == 0 {
+		return nil, fmt.Errorf("empty response body")
+	}
+
+	// Decode the response body
+	var respData SetCustomerRiskActionResponse
+	if err := json.Unmarshal(respBody, &respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// DeactivateAuthorization deactivates an authorization when the card needs to be forgotten.
+// It takes the client and request data as arguments and returns the deactivation response.
+func DeactivateAuthorization(client *paystack_client.Client, reqData DeactivateAuthorizationRequest) (*DeactivateAuthorizationResponse, error) {
+	url := "https://api.paystack.co/customer/deactivate_authorization"
+
+	// Marshal the request body to JSON
+	reqBody, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData DeactivateAuthorizationResponse
 	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
 		return nil, fmt.Errorf("failed to decode response body: %w", err)
 	}

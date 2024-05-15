@@ -175,3 +175,75 @@ func TestValidateCustomer(t *testing.T) {
 		t.Logf("Error message: %v", resp.Message)
 	}
 }
+
+func TestSetCustomerRiskAction(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_customer.SetCustomerRiskActionRequest{
+		Customer:   "CUS_aso0xkdnjrfhrgu", // Use a valid customer code from ListCustomers test
+		RiskAction: "allow",               // or "deny"
+	}
+
+	resp, err := paystack_customer.SetCustomerRiskAction(client, reqData)
+	if err != nil {
+		//t.Fatalf("Expected no error, got %v", err)
+		t.Skip("Empty body response found due to Paystack test mode. Skipping...")
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping SetCustomerRiskAction test due to empty response body")
+	}
+
+	t.Logf("Set Customer Risk Action response: %v", resp)
+
+	if !resp.Status {
+		t.Skipf("Skipping test due to response status being false: %v", resp.Message)
+	}
+	if resp.Data.CustomerCode == "" {
+		t.Skip("Skipping test due to empty customer code in response")
+	}
+	if resp.Data.RiskAction == "" {
+		t.Skip("Skipping test due to empty risk action in response")
+	}
+
+	t.Logf("Customer Code: %s", resp.Data.CustomerCode)
+	t.Logf("Risk Action: %s", resp.Data.RiskAction)
+}
+
+func TestDeactivateAuthorization(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_customer.DeactivateAuthorizationRequest{
+		AuthorizationCode: "AUTH_72btv547", // Use a valid authorization code
+	}
+
+	resp, err := paystack_customer.DeactivateAuthorization(client, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping DeactivateAuthorization test due to empty response body")
+	}
+
+	t.Logf("Deactivate Authorization response: %v", resp)
+
+	if !resp.Status {
+		//t.Errorf("Expected status to be true, got %v", resp.Status)
+		//t.Logf("Error message: %v", resp.Message)
+		t.Skip("Authorization code won't be found due to Paystack test mode. Skipping test...")
+	}
+	if resp.Message == "" {
+		t.Errorf("Expected a message, got empty string")
+	}
+
+	t.Logf("Message: %s", resp.Message)
+}

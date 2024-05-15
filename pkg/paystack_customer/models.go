@@ -144,3 +144,42 @@ type ValidateCustomerResponse struct {
 	Status  bool   `json:"status"`
 	Message string `json:"message"`
 }
+
+// SetCustomerRiskActionRequest represents the request body for setting a customer's risk action.
+type SetCustomerRiskActionRequest struct {
+	Customer   string `json:"customer"`
+	RiskAction string `json:"risk_action,omitempty"`
+}
+
+// SetCustomerRiskActionResponse represents the response from the Paystack API for setting a customer's risk action.
+type SetCustomerRiskActionResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		FirstName       string                 `json:"first_name"`
+		LastName        string                 `json:"last_name"`
+		Email           string                 `json:"email"`
+		Phone           string                 `json:"phone"`
+		Metadata        map[string]interface{} `json:"metadata"`
+		Domain          string                 `json:"domain"`
+		Identified      bool                   `json:"identified"`
+		Identifications interface{}            `json:"identifications"`
+		CustomerCode    string                 `json:"customer_code"`
+		RiskAction      string                 `json:"risk_action"`
+		ID              int                    `json:"id"`
+		Integration     int                    `json:"integration"`
+		CreatedAt       string                 `json:"createdAt"`
+		UpdatedAt       string                 `json:"updatedAt"`
+	} `json:"data"`
+}
+
+// DeactivateAuthorizationRequest represents the request body for deactivating an authorization.
+type DeactivateAuthorizationRequest struct {
+	AuthorizationCode string `json:"authorization_code"`
+}
+
+// DeactivateAuthorizationResponse represents the response from the Paystack API for deactivating an authorization.
+type DeactivateAuthorizationResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+}
