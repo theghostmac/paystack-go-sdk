@@ -33,6 +33,13 @@ func TestInitializeTransaction(t *testing.T) {
 	if resp.Data.AuthorizationURL == "" {
 		t.Errorf("Expected authorization_url, got empty")
 	}
+
+	// Log the transaction ID for use in other tests
+	fetchResp, err := paystack_transactions.VerifyTransaction(client, txnReference)
+	if err != nil {
+		t.Fatalf("Failed to verify transaction: %v", err)
+	}
+	t.Logf("Transaction ID: %d", fetchResp.Data.ID)
 }
 
 func TestVerifyTransaction(t *testing.T) {
@@ -77,5 +84,26 @@ func TestListTransactions(t *testing.T) {
 	}
 	if len(resp.Data) == 0 {
 		t.Errorf("Expected transactions, got none")
+	}
+}
+
+func TestFetchTransaction(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	transactionID := uint64(3795390315) // Replace with the transaction ID logged from TestInitializeTransaction
+
+	resp, err := paystack_transactions.FetchTransaction(client, transactionID)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+	}
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected transaction ID, got 0")
 	}
 }

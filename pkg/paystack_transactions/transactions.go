@@ -118,3 +118,33 @@ func ListTransactions(client *paystack_client.Client, queryParams map[string]str
 
 	return &respData, nil
 }
+
+// FetchTransaction fetches the details of a transaction carried out on your integration.
+// It takes the client and transaction ID as arguments and returns the transaction details.
+func FetchTransaction(client *paystack_client.Client, transactionID uint64) (*FetchTransactionResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/transaction/%d", transactionID)
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData FetchTransactionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
