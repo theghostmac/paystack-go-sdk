@@ -354,3 +354,62 @@ type ExportTransactionsResponse struct {
 		Path string `json:"path"`
 	} `json:"data"`
 }
+
+// PartialDebitRequest represents the request body for performing a partial debit.
+type PartialDebitRequest struct {
+	AuthorizationCode string `json:"authorization_code"`
+	Currency          string `json:"currency"`
+	Amount            string `json:"amount"`
+	Email             string `json:"email"`
+	Reference         string `json:"reference,omitempty"`
+	AtLeast           string `json:"at_least,omitempty"`
+}
+
+// PartialDebitResponse represents the response from the Paystack API for performing a partial debit.
+type PartialDebitResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		Amount          int    `json:"amount"`
+		Currency        string `json:"currency"`
+		TransactionDate string `json:"transaction_date"`
+		Status          string `json:"status"`
+		Reference       string `json:"reference"`
+		Domain          string `json:"domain"`
+		Metadata        string `json:"metadata"`
+		GatewayResponse string `json:"gateway_response"`
+		Message         string `json:"message"`
+		Channel         string `json:"channel"`
+		IPAddress       string `json:"ip_address"`
+		Log             string `json:"log"`
+		Fees            int    `json:"fees"`
+		Authorization   struct {
+			AuthorizationCode string `json:"authorization_code"`
+			Bin               string `json:"bin"`
+			Last4             string `json:"last4"`
+			ExpMonth          string `json:"exp_month"`
+			ExpYear           string `json:"exp_year"`
+			Channel           string `json:"channel"`
+			CardType          string `json:"card_type"`
+			Bank              string `json:"bank"`
+			CountryCode       string `json:"country_code"`
+			Brand             string `json:"brand"`
+			Reusable          bool   `json:"reusable"`
+			Signature         string `json:"signature"`
+			AccountName       string `json:"account_name"`
+		} `json:"authorization"`
+		Customer struct {
+			ID           uint64 `json:"id"`
+			FirstName    string `json:"first_name"`
+			LastName     string `json:"last_name"`
+			Email        string `json:"email"`
+			CustomerCode string `json:"customer_code"`
+			Phone        string `json:"phone"`
+			Metadata     string `json:"metadata"`
+			RiskAction   string `json:"risk_action"`
+		} `json:"customer"`
+		Plan            interface{} `json:"plan"`
+		RequestedAmount int         `json:"requested_amount"`
+		ID              uint64      `json:"id"`
+	} `json:"data"`
+}

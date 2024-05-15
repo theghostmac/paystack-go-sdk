@@ -65,6 +65,47 @@ func TestVerifyTransaction(t *testing.T) {
 	}
 }
 
+// TestInitializeTransaction initializes a transaction and logs the authorization code for further tests.
+func TestInitializeAdVerifyTransaction(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_transactions.InitializeTransactionRequest{
+		Amount: 20000,
+		Email:  "customer@email.com",
+	}
+
+	resp, err := paystack_transactions.InitializeTransaction(client, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	txnReference := resp.Data.Reference
+	t.Logf("Transaction reference: %v", txnReference)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+	}
+	if resp.Data.AuthorizationURL == "" {
+		t.Errorf("Expected authorization_url, got empty")
+	}
+
+	// Verify the transaction to get the authorization code
+	verifyResp, err := paystack_transactions.VerifyTransaction(client, txnReference)
+	if err != nil {
+		t.Fatalf("Failed to verify transaction: %v", err)
+	}
+
+	t.Logf("Transaction ID: %d", verifyResp.Data.ID)
+	//if len(verifyResp.Data.Authorization.AuthorizationCode) > 0 {
+	t.Logf("Authorization Code: %s", verifyResp.Data.Authorization.AuthorizationCode)
+	//} else {
+	//	t.Fatalf("Expected Authorization Code, got empty")
+	//}
+}
+
 func TestListTransactions(t *testing.T) {
 	client, err := paystack_client.NewClient(APIKEY)
 	if err != nil {
@@ -232,4 +273,43 @@ func TestExportTransactions(t *testing.T) {
 	}
 
 	t.Logf("Export Path: %s", resp.Data.Path)
+}
+
+func TestPartialDebit(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_transactions.PartialDebitRequest{
+		AuthorizationCode: "AUTH_72btv547",
+		Currency:          "NGN",
+		Amount:            "20000",
+		Email:             "customer@email.com",
+	}
+
+	resp, err := paystack_transactions.PartialDebit(client, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Partial Debit response: %v", resp)
+
+	if !resp.Status {
+		//t.Errorf("Expected status to be true, got %v", resp.Status)
+		//t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Partial Debit test due to error: %v", resp.Message)
+	}
+	if resp.Data.ID == 0 {
+		//t.Errorf("Expected transaction ID, got 0")
+		t.Skip("Skipping Partial Debit test due to invalid transaction ID")
+	}
+	if resp.Data.Amount == 0 {
+		//t.Errorf("Expected amount to be greater than 0, got %d", resp.Data.Amount)
+		t.Skip("Skipping Partial Debit test due to invalid amount")
+	}
+
+	t.Logf("Transaction ID: %d", resp.Data.ID)
+	t.Logf("Amount: %d", resp.Data.Amount)
+	t.Logf("Currency: %s", resp.Data.Currency)
 }

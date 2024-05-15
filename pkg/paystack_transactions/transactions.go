@@ -297,3 +297,40 @@ func ExportTransactions(client *paystack_client.Client, queryParams map[string]s
 
 	return &respData, nil
 }
+
+// PartialDebit performs a partial debit on Paystack.
+// It takes the client and request data as arguments and returns the response from Paystack.
+func PartialDebit(client *paystack_client.Client, reqData PartialDebitRequest) (*PartialDebitResponse, error) {
+	url := "https://api.paystack.co/transaction/partial_debit"
+
+	// Marshal the request body to JSON
+	reqBody, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData PartialDebitResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
