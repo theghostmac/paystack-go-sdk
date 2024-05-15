@@ -91,7 +91,7 @@ func main() {
         log.Fatal(err)
     }
 
-    transactionID := uint64(292584114) // Example transaction ID
+    transactionID := uint64(3795390315) // Example transaction ID
 
     resp, err := paystack_transactions.FetchTransaction(client, transactionID)
     if err != nil {

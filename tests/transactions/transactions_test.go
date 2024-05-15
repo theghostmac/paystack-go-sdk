@@ -107,3 +107,36 @@ func TestFetchTransaction(t *testing.T) {
 		t.Errorf("Expected transaction ID, got 0")
 	}
 }
+
+func TestChargeAuthorization(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_transactions.ChargeAuthorizationRequest{
+		Amount:            "20000",
+		Email:             "customer@email.com",
+		AuthorizationCode: "AUTH_72btv547",
+		Reference:         "xd5zqbqilr",
+		Currency:          "NGN",
+		Metadata:          `{"custom_fields":[{"display_name":"Cart ID","variable_name": "cart_id","value": "8393"}]}`,
+		Channels:          []string{"card"},
+		SubAccount:        "ACCT_8f4s1eq7ml6rlzj",
+		TransactionCharge: 100,
+		Bearer:            "account",
+		Queue:             true,
+	}
+
+	resp, err := paystack_transactions.ChargeAuthorization(client, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+	}
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected transaction ID, got 0")
+	}
+}
