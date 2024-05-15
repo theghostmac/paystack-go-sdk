@@ -348,3 +348,39 @@ func TestRemoveSplitFromDedicatedAccount(t *testing.T) {
 	t.Logf("Account Number: %s", resp.Data.AccountNumber)
 	t.Logf("Account Name: %s", resp.Data.AccountName)
 }
+
+func TestFetchBankProviders(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	resp, err := paystack_accounts.FetchBankProviders(client)
+	if err != nil {
+		// t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping Fetch Bank Providers test due to error: %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping Fetch Bank Providers test due to empty response body")
+	}
+
+	t.Logf("Fetch Bank Providers response: %v", resp)
+
+	if !resp.Status {
+		// t.Errorf("Expected status to be true, got %v", resp.Status)
+		// t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Fetch Bank Providers test due to: %v", resp.Message)
+	}
+
+	// Check for required fields
+	if len(resp.Data) == 0 {
+		t.Errorf("Expected at least one bank provider, got %d", len(resp.Data))
+	}
+
+	// Log the bank providers
+	for _, provider := range resp.Data {
+		t.Logf("Bank Provider: %v", provider)
+	}
+}

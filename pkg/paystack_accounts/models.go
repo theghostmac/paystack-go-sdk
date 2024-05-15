@@ -262,3 +262,18 @@ type RemoveSplitFromDedicatedAccountResponse struct {
 		UpdatedAt     string   `json:"updatedAt"`
 	} `json:"data"`
 }
+
+// BankProvider represents a bank provider for a dedicated account.
+type BankProvider struct {
+	ProviderSlug string `json:"provider_slug"`
+	BankID       int    `json:"bank_id"`
+	BankName     string `json:"bank_name"`
+	ID           int    `json:"id"`
+}
+
+// FetchBankProvidersResponse represents the response from the Paystack API for fetching bank providers.
+type FetchBankProvidersResponse struct {
+	Status  bool           `json:"status"`
+	Message string         `json:"message"`
+	Data    []BankProvider `json:"data"`
+}
