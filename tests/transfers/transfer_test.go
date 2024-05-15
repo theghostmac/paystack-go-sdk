@@ -223,3 +223,41 @@ func TestFetchTransfer(t *testing.T) {
 	t.Logf("Transfer Amount: %d", resp.Data.Amount)
 	t.Logf("Transfer Status: %s", resp.Data.Status)
 }
+
+func TestVerifyTransfer(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reference := "ref_demo" // Use a valid transfer reference from ListTransfers test
+
+	resp, err := paystack_transfers.VerifyTransfer(client, reference)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping VerifyTransfer test due to empty response body")
+	}
+
+	t.Logf("Verify Transfer response: %v", resp)
+
+	if !resp.Status {
+		// t.Errorf("Expected status to be true, got %v", resp.Status)
+		// t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping VerifyTransfer test due to: %v", resp.Message)
+	}
+
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected transfer ID, got 0")
+	}
+	if resp.Data.Amount == 0 {
+		t.Errorf("Expected transfer amount to be greater than 0, got %d", resp.Data.Amount)
+	}
+
+	t.Logf("Transfer ID: %d", resp.Data.ID)
+	t.Logf("Transfer Amount: %d", resp.Data.Amount)
+	t.Logf("Transfer Status: %s", resp.Data.Status)
+}

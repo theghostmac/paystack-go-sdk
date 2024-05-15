@@ -185,3 +185,32 @@ func FetchTransfer(client *paystack_client.Client, idOrCode string) (*FetchTrans
 
 	return &respData, nil
 }
+
+// VerifyTransfer verifies the status of a transfer on your integration.
+func VerifyTransfer(client *paystack_client.Client, reference string) (*VerifyTransferResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/transfer/verify/%s", reference)
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData VerifyTransferResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}

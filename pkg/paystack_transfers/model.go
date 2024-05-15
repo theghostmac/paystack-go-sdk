@@ -153,3 +153,10 @@ type FetchTransferResponse struct {
 	Message string    `json:"message"`
 	Data    Transfers `json:"data"`
 }
+
+// VerifyTransferResponse represents the response from the Paystack API for verifying a transfer.
+type VerifyTransferResponse struct {
+	Status  bool      `json:"status"`
+	Message string    `json:"message"`
+	Data    Transfers `json:"data"`
+}
