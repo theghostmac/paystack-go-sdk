@@ -78,3 +78,34 @@ func TestListCustomers(t *testing.T) {
 		t.Logf("Customer: %v", customer)
 	}
 }
+
+func TestFetchCustomer(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	emailOrCode := "CUS_aso0xkdnjrfhrgu" // Use a valid customer code from ListCustomers test
+
+	resp, err := paystack_customer.FetchCustomer(client, emailOrCode)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Fetch Customer response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected customer ID to be greater than 0, got %d", resp.Data.ID)
+	}
+	if resp.Data.Email == "" {
+		t.Errorf("Expected email, got empty")
+	}
+
+	t.Logf("Customer ID: %d", resp.Data.ID)
+	t.Logf("Customer Email: %s", resp.Data.Email)
+	t.Logf("Customer Code: %s", resp.Data.CustomerCode)
+}

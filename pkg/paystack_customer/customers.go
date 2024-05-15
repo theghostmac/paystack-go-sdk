@@ -81,3 +81,33 @@ func ListCustomers(client *paystack_client.Client, queryParams map[string]string
 
 	return &respData, nil
 }
+
+// FetchCustomer gets the details of a customer on your integration.
+// It takes the client and customer email or code as arguments and returns the customer details.
+func FetchCustomer(client *paystack_client.Client, emailOrCode string) (*FetchCustomerResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/customer/%s", emailOrCode)
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData FetchCustomerResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
