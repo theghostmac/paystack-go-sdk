@@ -110,6 +110,38 @@ func TestFetchCustomer(t *testing.T) {
 	t.Logf("Customer Code: %s", resp.Data.CustomerCode)
 }
 
+func TestValidateCustomer(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	customerCode := "CUS_aso0xkdnjrfhrgu" // Use a valid customer code from ListCustomers test
+	reqData := paystack_customer.ValidateCustomerRequest{
+		FirstName:     "Asta",
+		LastName:      "Lavista",
+		Type:          "bank_account",
+		Value:         "0123456789",
+		Country:       "NG",
+		BVN:           "20012345677",
+		BankCode:      "007",
+		AccountNumber: "0123456789",
+	}
+
+	resp, err := paystack_customer.ValidateCustomer(client, customerCode, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Validate Customer response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+}
+
+// TestUpdateCustomer works properly, but is skipped because of multiple calls.
 func TestUpdateCustomer(t *testing.T) {
 	client, err := paystack_client.NewClient(APIKEY)
 	if err != nil {
@@ -143,37 +175,6 @@ func TestUpdateCustomer(t *testing.T) {
 	t.Logf("Customer ID: %d", resp.Data.ID)
 	t.Logf("Customer First Name: %s", resp.Data.FirstName)
 	t.Logf("Customer Last Name: %s", resp.Data.LastName)
-}
-
-func TestValidateCustomer(t *testing.T) {
-	client, err := paystack_client.NewClient(APIKEY)
-	if err != nil {
-		t.Fatalf("Failed to create Paystack client: %v", err)
-	}
-
-	customerCode := "CUS_aso0xkdnjrfhrgu" // Use a valid customer code from ListCustomers test
-	reqData := paystack_customer.ValidateCustomerRequest{
-		FirstName:     "Asta",
-		LastName:      "Lavista",
-		Type:          "bank_account",
-		Value:         "0123456789",
-		Country:       "NG",
-		BVN:           "20012345677",
-		BankCode:      "007",
-		AccountNumber: "0123456789",
-	}
-
-	resp, err := paystack_customer.ValidateCustomer(client, customerCode, reqData)
-	if err != nil {
-		t.Fatalf("Expected no error, got %v", err)
-	}
-
-	t.Logf("Validate Customer response: %v", resp)
-
-	if !resp.Status {
-		t.Errorf("Expected status to be true, got %v", resp.Status)
-		t.Logf("Error message: %v", resp.Message)
-	}
 }
 
 func TestSetCustomerRiskAction(t *testing.T) {
