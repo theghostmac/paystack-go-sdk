@@ -109,3 +109,69 @@ func TestFetchCustomer(t *testing.T) {
 	t.Logf("Customer Email: %s", resp.Data.Email)
 	t.Logf("Customer Code: %s", resp.Data.CustomerCode)
 }
+
+func TestUpdateCustomer(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	customerCode := "CUS_aso0xkdnjrfhrgu" // Use a valid customer code from ListCustomers test
+	reqData := paystack_customer.UpdateCustomerRequest{
+		FirstName: "BoJack",
+		LastName:  "Horseman",
+	}
+
+	resp, err := paystack_customer.UpdateCustomer(client, customerCode, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Update Customer response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected customer ID to be greater than 0, got %d", resp.Data.ID)
+	}
+	if resp.Data.FirstName != "BoJack" {
+		t.Errorf("Expected first name to be 'BoJack', got %s", resp.Data.FirstName)
+	}
+
+	t.Logf("Customer ID: %d", resp.Data.ID)
+	t.Logf("Customer First Name: %s", resp.Data.FirstName)
+	t.Logf("Customer Last Name: %s", resp.Data.LastName)
+}
+
+func TestValidateCustomer(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	customerCode := "CUS_aso0xkdnjrfhrgu" // Use a valid customer code from ListCustomers test
+	reqData := paystack_customer.ValidateCustomerRequest{
+		FirstName:     "Asta",
+		LastName:      "Lavista",
+		Type:          "bank_account",
+		Value:         "0123456789",
+		Country:       "NG",
+		BVN:           "20012345677",
+		BankCode:      "007",
+		AccountNumber: "0123456789",
+	}
+
+	resp, err := paystack_customer.ValidateCustomer(client, customerCode, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Validate Customer response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+}

@@ -94,3 +94,53 @@ type FetchCustomerResponse struct {
 		Identifications       interface{} `json:"identifications"`
 	} `json:"data"`
 }
+
+// UpdateCustomerRequest represents the request body for updating a customer.
+type UpdateCustomerRequest struct {
+	FirstName string                 `json:"first_name,omitempty"`
+	LastName  string                 `json:"last_name,omitempty"`
+	Phone     string                 `json:"phone,omitempty"`
+	Metadata  map[string]interface{} `json:"metadata,omitempty"`
+}
+
+// UpdateCustomerResponse represents the response from the Paystack API for updating a customer.
+type UpdateCustomerResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		Integration     int                    `json:"integration"`
+		FirstName       string                 `json:"first_name"`
+		LastName        string                 `json:"last_name"`
+		Email           string                 `json:"email"`
+		Phone           string                 `json:"phone"`
+		Metadata        map[string]interface{} `json:"metadata"`
+		Identified      bool                   `json:"identified"`
+		Identifications interface{}            `json:"identifications"`
+		Domain          string                 `json:"domain"`
+		CustomerCode    string                 `json:"customer_code"`
+		ID              int                    `json:"id"`
+		CreatedAt       string                 `json:"createdAt"`
+		UpdatedAt       string                 `json:"updatedAt"`
+		Transactions    []interface{}          `json:"transactions"`
+		Subscriptions   []interface{}          `json:"subscriptions"`
+		Authorizations  []interface{}          `json:"authorizations"`
+	} `json:"data"`
+}
+
+// ValidateCustomerRequest represents the request body for validating a customer.
+type ValidateCustomerRequest struct {
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	Type          string `json:"type"`
+	Value         string `json:"value"`
+	Country       string `json:"country"`
+	BVN           string `json:"bvn"`
+	BankCode      string `json:"bank_code"`
+	AccountNumber string `json:"account_number"`
+}
+
+// ValidateCustomerResponse represents the response from the Paystack API for validating a customer.
+type ValidateCustomerResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+}

@@ -111,3 +111,77 @@ func FetchCustomer(client *paystack_client.Client, emailOrCode string) (*FetchCu
 
 	return &respData, nil
 }
+
+// UpdateCustomer updates a customer's details on your integration.
+// It takes the client, customer code, and request data as arguments and returns the updated customer details.
+func UpdateCustomer(client *paystack_client.Client, customerCode string, reqData UpdateCustomerRequest) (*UpdateCustomerResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/customer/%s", customerCode)
+
+	// Marshal the request body to JSON
+	reqBody, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData UpdateCustomerResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// ValidateCustomer validates a customer's identity on your integration.
+// It takes the client, customer code, and request data as arguments and returns the validation response.
+func ValidateCustomer(client *paystack_client.Client, customerCode string, reqData ValidateCustomerRequest) (*ValidateCustomerResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/customer/%s/identification", customerCode)
+
+	// Marshal the request body to JSON
+	reqBody, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData ValidateCustomerResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
