@@ -160,3 +160,32 @@ type RequeryDedicatedAccountResponse struct {
 	Status  bool   `json:"status"`
 	Message string `json:"message"`
 }
+
+// DeactivateDedicatedAccountResponse represents the response from the Paystack API for deactivating a dedicated virtual account.
+type DeactivateDedicatedAccountResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		Bank struct {
+			Name string `json:"name"`
+			ID   int    `json:"id"`
+			Slug string `json:"slug"`
+		} `json:"bank"`
+		AccountName   string `json:"account_name"`
+		AccountNumber string `json:"account_number"`
+		Assigned      bool   `json:"assigned"`
+		Currency      string `json:"currency"`
+		Metadata      string `json:"metadata"`
+		Active        bool   `json:"active"`
+		ID            int    `json:"id"`
+		CreatedAt     string `json:"created_at"`
+		UpdatedAt     string `json:"updated_at"`
+		Assignment    struct {
+			AssigneeID   int    `json:"assignee_id"`
+			AssigneeType string `json:"assignee_type"`
+			AssignedAt   string `json:"assigned_at"`
+			Integration  int    `json:"integration"`
+			AccountType  string `json:"account_type"`
+		} `json:"assignment"`
+	} `json:"data"`
+}

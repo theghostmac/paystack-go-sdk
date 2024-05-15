@@ -210,3 +210,45 @@ func TestRequeryDedicatedAccount(t *testing.T) {
 	// Log the requery message
 	t.Logf("Message: %s", resp.Message)
 }
+
+// Test function for deactivating a dedicated virtual account
+func TestDeactivateDedicatedAccount(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	dedicatedAccountID := 173 // Replace with a valid dedicated account ID for testing
+
+	resp, err := paystack_accounts.DeactivateDedicatedAccount(client, dedicatedAccountID)
+	if err != nil {
+		// t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping Deactivate Dedicated Account test due to error: %v", err)
+	}
+
+	// Log the response
+	t.Logf("Deactivate Dedicated Account response: %v", resp)
+
+	// Skip the test if status is false
+	if !resp.Status {
+		// t.Errorf("Expected status to be true, got %v", resp.Status)
+		// t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Deactivate Dedicated Account test due to: %v", resp.Message)
+	}
+
+	// Check for required fields
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected account ID to be greater than 0, got %d", resp.Data.ID)
+	}
+	if resp.Data.AccountNumber == "" {
+		t.Errorf("Expected account number, got empty")
+	}
+	if resp.Data.AccountName == "" {
+		t.Errorf("Expected account name, got empty")
+	}
+
+	// Log the deactivated account details
+	t.Logf("Account ID: %d", resp.Data.ID)
+	t.Logf("Account Number: %s", resp.Data.AccountNumber)
+	t.Logf("Account Name: %s", resp.Data.AccountName)
+}

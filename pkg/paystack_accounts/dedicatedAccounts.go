@@ -188,3 +188,33 @@ func RequeryDedicatedAccount(client *paystack_client.Client, queryParams map[str
 
 	return &respData, nil
 }
+
+// DeactivateDedicatedAccount deactivates a dedicated virtual account on your integration.
+// It takes the client and the dedicated account ID as arguments and returns the deactivation status.
+func DeactivateDedicatedAccount(client *paystack_client.Client, dedicatedAccountID int) (*DeactivateDedicatedAccountResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/dedicated_account/%d", dedicatedAccountID)
+
+	// Create the HTTP request
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData DeactivateDedicatedAccountResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
