@@ -215,3 +215,44 @@ func ViewTransactionTimeline(client *paystack_client.Client, idOrReference strin
 
 	return &respData, nil
 }
+
+// GetTransactionTotals fetches the total amount received on your account.
+// It takes the client and optional query parameters as arguments and returns the transaction totals.
+func GetTransactionTotals(client *paystack_client.Client, queryParams map[string]string) (*TransactionTotalsResponse, error) {
+	baseURL := "https://api.paystack.co/transaction/totals"
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
+	}
+
+	// Add query parameters to URL
+	q := u.Query()
+	for key, value := range queryParams {
+		q.Set(key, value)
+	}
+	u.RawQuery = q.Encode()
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData TransactionTotalsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}

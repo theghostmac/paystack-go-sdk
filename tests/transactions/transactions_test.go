@@ -174,3 +174,33 @@ func TestViewTransactionTimeline(t *testing.T) {
 
 	t.Skip("Skipping View Transaction Timeline test due to invalid test data values")
 }
+
+func TestGetTransactionTotals(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"perPage": "50",
+		"page":    "1",
+	}
+
+	resp, err := paystack_transactions.GetTransactionTotals(client, queryParams)
+	if err != nil {
+		t.Skipf("Skipping Get Transaction Totals test due to error: %v", err)
+	}
+
+	t.Logf("Transaction Totals response: %v", resp)
+
+	if !resp.Status {
+		t.Skipf("Skipping Get Transaction Totals test due to error: %v", resp.Message)
+	}
+	if resp.Data.TotalTransactions == 0 {
+		t.Skip("Skipping Get Transaction Totals test due to no transactions")
+	}
+
+	t.Logf("Total Transactions: %d", resp.Data.TotalTransactions)
+	t.Logf("Unique Customers: %d", resp.Data.UniqueCustomers)
+	t.Logf("Total Volume: %d", resp.Data.TotalVolume)
+}

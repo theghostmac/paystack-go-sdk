@@ -325,3 +325,23 @@ type TransactionTimelineResponse struct {
 		} `json:"history"`
 	} `json:"data"`
 }
+
+// TransactionTotalsResponse represents the response from the Paystack API for fetching transaction totals.
+type TransactionTotalsResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		TotalTransactions     int `json:"total_transactions"`
+		UniqueCustomers       int `json:"unique_customers"`
+		TotalVolume           int `json:"total_volume"`
+		TotalVolumeByCurrency []struct {
+			Currency string `json:"currency"`
+			Amount   int    `json:"amount"`
+		} `json:"total_volume_by_currency"`
+		PendingTransfers           int `json:"pending_transfers"`
+		PendingTransfersByCurrency []struct {
+			Currency string `json:"currency"`
+			Amount   int    `json:"amount"`
+		} `json:"pending_transfers_by_currency"`
+	} `json:"data"`
+}
