@@ -44,3 +44,37 @@ func TestCreateCustomer(t *testing.T) {
 	t.Logf("Customer Code: %s", resp.Data.CustomerCode)
 	t.Logf("Customer Email: %s", resp.Data.Email)
 }
+
+func TestListCustomers(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"perPage": "3",
+		"page":    "1",
+	}
+
+	resp, err := paystack_customer.ListCustomers(client, queryParams)
+	if err != nil {
+		//t.Skipf("Skipping List Customers test due to error: %v", err)
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("List Customers response: %v", resp)
+
+	if !resp.Status {
+		//t.Skipf("Skipping List Customers test due to error: %v", resp.Message)
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+	if len(resp.Data) == 0 {
+		//t.Skip("Skipping List Customers test due to no customers found")
+		t.Errorf("Expected customers, got none")
+	}
+
+	for _, customer := range resp.Data {
+		t.Logf("Customer: %v", customer)
+	}
+}
