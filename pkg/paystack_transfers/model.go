@@ -58,3 +58,31 @@ type FinalizeTransferResponse struct {
 		UpdatedAt     string `json:"updatedAt"`
 	} `json:"data"`
 }
+
+// Transfer represents a single transfer object in a bulk transfer request.
+type Transfer struct {
+	Amount    int    `json:"amount"`
+	Reference string `json:"reference"`
+	Reason    string `json:"reason"`
+	Recipient string `json:"recipient"`
+}
+
+// InitiateBulkTransferRequest represents the request body for initiating a bulk transfer.
+type InitiateBulkTransferRequest struct {
+	Source    string     `json:"source"`
+	Transfers []Transfer `json:"transfers"`
+}
+
+// InitiateBulkTransferResponse represents the response from the Paystack API for initiating a bulk transfer.
+type InitiateBulkTransferResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    []struct {
+		Reference    string `json:"reference"`
+		Recipient    string `json:"recipient"`
+		Amount       int    `json:"amount"`
+		TransferCode string `json:"transfer_code"`
+		Currency     string `json:"currency"`
+		Status       string `json:"status"`
+	} `json:"data"`
+}
