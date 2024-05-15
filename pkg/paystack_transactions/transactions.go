@@ -185,3 +185,33 @@ func ChargeAuthorization(client *paystack_client.Client, reqData ChargeAuthoriza
 
 	return &respData, nil
 }
+
+// ViewTransactionTimeline retrieves the timeline of a transaction.
+// It takes the client and transaction ID or reference as arguments and returns the transaction timeline.
+func ViewTransactionTimeline(client *paystack_client.Client, idOrReference string) (*TransactionTimelineResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/transaction/timeline/%s", idOrReference)
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData TransactionTimelineResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}

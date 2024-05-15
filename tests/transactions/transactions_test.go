@@ -150,3 +150,27 @@ func TestChargeAuthorization(t *testing.T) {
 
 	t.Skip("Skipping Charge Authorization test due to invalid test data values")
 }
+
+func TestViewTransactionTimeline(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	// Replace with a valid transaction reference or ID
+	idOrReference := "xd5zqbqilr"
+
+	resp, err := paystack_transactions.ViewTransactionTimeline(client, idOrReference)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Timeline response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+
+	t.Skip("Skipping View Transaction Timeline test due to invalid test data values")
+}

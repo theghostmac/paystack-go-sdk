@@ -304,3 +304,24 @@ type ChargeAuthorizationResponse struct {
 		ID   uint64      `json:"id"`
 	} `json:"data"`
 }
+
+// TransactionTimelineResponse represents the response from the Paystack API for viewing the transaction timeline.
+type TransactionTimelineResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		TimeSpent      int           `json:"time_spent"`
+		Attempts       int           `json:"attempts"`
+		Authentication interface{}   `json:"authentication"`
+		Errors         int           `json:"errors"`
+		Success        bool          `json:"success"`
+		Mobile         bool          `json:"mobile"`
+		Input          []interface{} `json:"input"`
+		Channel        string        `json:"channel"`
+		History        []struct {
+			Type    string `json:"type"`
+			Message string `json:"message"`
+			Time    int    `json:"time"`
+		} `json:"history"`
+	} `json:"data"`
+}
