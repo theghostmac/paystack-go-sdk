@@ -218,3 +218,77 @@ func DeactivateDedicatedAccount(client *paystack_client.Client, dedicatedAccount
 
 	return &respData, nil
 }
+
+// SplitDedicatedAccount splits a dedicated virtual account transaction with one or more accounts.
+// It takes the client and the request data as arguments and returns the split status.
+func SplitDedicatedAccount(client *paystack_client.Client, reqData SplitDedicatedAccountRequest) (*SplitDedicatedAccountResponse, error) {
+	url := "https://api.paystack.co/dedicated_account/split"
+
+	// Encode the request data to JSON
+	jsonData, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode request data to JSON: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData SplitDedicatedAccountResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// RemoveSplitFromDedicatedAccount removes the split from a dedicated virtual account.
+// It takes the client and the request data as arguments and returns the status.
+func RemoveSplitFromDedicatedAccount(client *paystack_client.Client, reqData RemoveSplitFromDedicatedAccountRequest) (*RemoveSplitFromDedicatedAccountResponse, error) {
+	url := "https://api.paystack.co/dedicated_account/split"
+
+	// Encode the request data to JSON
+	jsonData, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode request data to JSON: %w", err)
+	}
+
+	// Create the HTTP request
+	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData RemoveSplitFromDedicatedAccountResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}

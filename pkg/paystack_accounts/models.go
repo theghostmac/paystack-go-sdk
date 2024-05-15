@@ -189,3 +189,76 @@ type DeactivateDedicatedAccountResponse struct {
 		} `json:"assignment"`
 	} `json:"data"`
 }
+
+// SplitDedicatedAccountRequest represents the request body for splitting a dedicated account transaction.
+type SplitDedicatedAccountRequest struct {
+	Customer      string `json:"customer"`
+	PreferredBank string `json:"preferred_bank"`
+	SplitCode     string `json:"split_code"`
+}
+
+// SplitDedicatedAccountResponse represents the response from the Paystack API for splitting a dedicated account transaction.
+type SplitDedicatedAccountResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		Bank struct {
+			Name string `json:"name"`
+			ID   int    `json:"id"`
+			Slug string `json:"slug"`
+		} `json:"bank"`
+		AccountName   string `json:"account_name"`
+		AccountNumber string `json:"account_number"`
+		Assigned      bool   `json:"assigned"`
+		Currency      string `json:"currency"`
+		Metadata      string `json:"metadata"`
+		Active        bool   `json:"active"`
+		ID            int    `json:"id"`
+		CreatedAt     string `json:"created_at"`
+		UpdatedAt     string `json:"updated_at"`
+		Assignment    struct {
+			Integration  int    `json:"integration"`
+			AssigneeID   int    `json:"assignee_id"`
+			AssigneeType string `json:"assignee_type"`
+			Expired      bool   `json:"expired"`
+			AccountType  string `json:"account_type"`
+			AssignedAt   string `json:"assigned_at"`
+			ExpiredAt    string `json:"expired_at"`
+		} `json:"assignment"`
+		SplitConfig struct {
+			SplitCode string `json:"split_code"`
+		} `json:"split_config"`
+		Customer struct {
+			ID           int    `json:"id"`
+			FirstName    string `json:"first_name"`
+			LastName     string `json:"last_name"`
+			Email        string `json:"email"`
+			Phone        string `json:"phone"`
+			Metadata     string `json:"metadata"`
+			RiskAction   string `json:"risk_action"`
+			CustomerCode string `json:"customer_code"`
+		} `json:"customer"`
+	} `json:"data"`
+}
+
+// RemoveSplitFromDedicatedAccountRequest represents the request body for removing split from a dedicated account.
+type RemoveSplitFromDedicatedAccountRequest struct {
+	AccountNumber string `json:"account_number"`
+}
+
+// RemoveSplitFromDedicatedAccountResponse represents the response from the Paystack API for removing split from a dedicated account.
+type RemoveSplitFromDedicatedAccountResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		ID            int      `json:"id"`
+		SplitConfig   struct{} `json:"split_config"`
+		AccountName   string   `json:"account_name"`
+		AccountNumber string   `json:"account_number"`
+		Currency      string   `json:"currency"`
+		Assigned      bool     `json:"assigned"`
+		Active        bool     `json:"active"`
+		CreatedAt     string   `json:"createdAt"`
+		UpdatedAt     string   `json:"updatedAt"`
+	} `json:"data"`
+}

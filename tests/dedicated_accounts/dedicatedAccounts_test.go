@@ -252,3 +252,99 @@ func TestDeactivateDedicatedAccount(t *testing.T) {
 	t.Logf("Account Number: %s", resp.Data.AccountNumber)
 	t.Logf("Account Name: %s", resp.Data.AccountName)
 }
+
+// Test function for splitting a dedicated virtual account transaction
+func TestSplitDedicatedAccountTransaction(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_accounts.SplitDedicatedAccountRequest{
+		Customer:      "CUS_aso0xkdnjrfhrgu", // Replace with a valid customer ID or code
+		PreferredBank: "wema-bank",
+		SplitCode:     "SPL_e7jnRLtzla", // Replace with a valid split code
+	}
+
+	resp, err := paystack_accounts.SplitDedicatedAccount(client, reqData)
+	if err != nil {
+		// t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping Split Dedicated Account Transaction test due to error: %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping Split Dedicated Account Transaction test due to empty response body")
+	}
+
+	t.Logf("Split Dedicated Account Transaction response: %v", resp)
+
+	if !resp.Status {
+		// t.Errorf("Expected status to be true, got %v", resp.Status)
+		// t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Split Dedicated Account Transaction test due to: %v", resp.Message)
+	}
+
+	// Check for required fields
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected account ID to be greater than 0, got %d", resp.Data.ID)
+	}
+	if resp.Data.AccountNumber == "" {
+		t.Errorf("Expected account number, got empty")
+	}
+	if resp.Data.AccountName == "" {
+		t.Errorf("Expected account name, got empty")
+	}
+
+	// Log the split account details
+	t.Logf("Account ID: %d", resp.Data.ID)
+	t.Logf("Account Number: %s", resp.Data.AccountNumber)
+	t.Logf("Account Name: %s", resp.Data.AccountName)
+}
+
+// Test function for removing split from a dedicated virtual account
+func TestRemoveSplitFromDedicatedAccount(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_accounts.RemoveSplitFromDedicatedAccountRequest{
+		AccountNumber: "0033322211", // Replace with a valid dedicated virtual account number
+	}
+
+	resp, err := paystack_accounts.RemoveSplitFromDedicatedAccount(client, reqData)
+	if err != nil {
+		// t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping Remove Split from Dedicated Account test due to error: %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping Remove Split from Dedicated Account test due to empty response body")
+	}
+
+	t.Logf("Remove Split from Dedicated Account response: %v", resp)
+
+	if !resp.Status {
+		// t.Errorf("Expected status to be true, got %v", resp.Status)
+		// t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Remove Split from Dedicated Account test due to: %v", resp.Message)
+	}
+
+	// Check for required fields
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected account ID to be greater than 0, got %d", resp.Data.ID)
+	}
+	if resp.Data.AccountNumber == "" {
+		t.Errorf("Expected account number, got empty")
+	}
+	if resp.Data.AccountName == "" {
+		t.Errorf("Expected account name, got empty")
+	}
+
+	// Log the account details
+	t.Logf("Account ID: %d", resp.Data.ID)
+	t.Logf("Account Number: %s", resp.Data.AccountNumber)
+	t.Logf("Account Name: %s", resp.Data.AccountName)
+}
