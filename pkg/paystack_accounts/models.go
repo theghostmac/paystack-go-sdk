@@ -45,3 +45,19 @@ type CreateDedicatedAccountResponse struct {
 		} `json:"customer"`
 	} `json:"data"`
 }
+
+// AssignDedicatedAccountRequest represents the request body for assigning a dedicated virtual account.
+type AssignDedicatedAccountRequest struct {
+	Email         string `json:"email"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	Phone         string `json:"phone"`
+	PreferredBank string `json:"preferred_bank"`
+	Country       string `json:"country"`
+}
+
+// AssignDedicatedAccountResponse represents the response from the Paystack API for assigning a dedicated virtual account.
+type AssignDedicatedAccountResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+}

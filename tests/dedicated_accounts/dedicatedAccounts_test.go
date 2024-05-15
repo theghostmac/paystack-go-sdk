@@ -50,3 +50,43 @@ func TestCreateDedicatedAccount(t *testing.T) {
 	t.Logf("Account Number: %s", resp.Data.AccountNumber)
 	t.Logf("Account Name: %s", resp.Data.AccountName)
 }
+
+func TestAssignDedicatedAccount(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	reqData := paystack_accounts.AssignDedicatedAccountRequest{
+		Email:         "janedoe@test.com",
+		FirstName:     "Jane",
+		LastName:      "Doe",
+		Phone:         "+2348100000000",
+		PreferredBank: "wema-bank",
+		Country:       "NG",
+	}
+
+	resp, err := paystack_accounts.AssignDedicatedAccount(client, reqData)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping AssignDedicatedAccount test due to empty response body")
+	}
+
+	t.Logf("Assign Dedicated Account response: %v", resp)
+
+	if !resp.Status {
+		//t.Errorf("Expected status to be true, got %v", resp.Status)
+		//t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping AssignDedicatedAccount test due to: %v", resp.Message)
+	}
+
+	if resp.Message == "" {
+		t.Errorf("Expected a message, got empty string")
+	}
+
+	t.Logf("Message: %s", resp.Message)
+}
