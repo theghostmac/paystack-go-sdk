@@ -204,3 +204,32 @@ func TestGetTransactionTotals(t *testing.T) {
 	t.Logf("Unique Customers: %d", resp.Data.UniqueCustomers)
 	t.Logf("Total Volume: %d", resp.Data.TotalVolume)
 }
+
+func TestExportTransactions(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"perPage": "50",
+		"page":    "1",
+	}
+
+	resp, err := paystack_transactions.ExportTransactions(client, queryParams)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	t.Logf("Export Transactions response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+	if resp.Data.Path == "" {
+		t.Errorf("Expected a valid path, got empty string")
+	}
+
+	t.Logf("Export Path: %s", resp.Data.Path)
+}

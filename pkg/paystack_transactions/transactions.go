@@ -256,3 +256,44 @@ func GetTransactionTotals(client *paystack_client.Client, queryParams map[string
 
 	return &respData, nil
 }
+
+// ExportTransactions exports a list of transactions carried out on your integration.
+// It takes the client and query parameters as arguments and returns the export URL.
+func ExportTransactions(client *paystack_client.Client, queryParams map[string]string) (*ExportTransactionsResponse, error) {
+	baseURL := "https://api.paystack.co/transaction/export"
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
+	}
+
+	// Add query parameters to URL
+	q := u.Query()
+	for key, value := range queryParams {
+		q.Set(key, value)
+	}
+	u.RawQuery = q.Encode()
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData ExportTransactionsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}

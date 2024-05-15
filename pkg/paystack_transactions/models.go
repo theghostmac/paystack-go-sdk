@@ -345,3 +345,12 @@ type TransactionTotalsResponse struct {
 		} `json:"pending_transfers_by_currency"`
 	} `json:"data"`
 }
+
+// ExportTransactionsResponse represents the response from the Paystack API for exporting transactions.
+type ExportTransactionsResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		Path string `json:"path"`
+	} `json:"data"`
+}
