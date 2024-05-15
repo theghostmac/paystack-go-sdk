@@ -86,3 +86,70 @@ type InitiateBulkTransferResponse struct {
 		Status       string `json:"status"`
 	} `json:"data"`
 }
+
+// Transfers represents a single transfer object.
+type Transfers struct {
+	Integration   int       `json:"integration"`
+	Recipient     Recipient `json:"recipient"`
+	Domain        string    `json:"domain"`
+	Amount        int       `json:"amount"`
+	Currency      string    `json:"currency"`
+	Source        string    `json:"source"`
+	SourceDetails string    `json:"source_details"`
+	Reason        string    `json:"reason"`
+	Status        string    `json:"status"`
+	Failures      string    `json:"failures"`
+	TransferCode  string    `json:"transfer_code"`
+	ID            int       `json:"id"`
+	CreatedAt     string    `json:"createdAt"`
+	UpdatedAt     string    `json:"updatedAt"`
+}
+
+// Recipient represents the recipient object within a transfer.
+type Recipient struct {
+	Domain        string  `json:"domain"`
+	Type          string  `json:"type"`
+	Currency      string  `json:"currency"`
+	Name          string  `json:"name"`
+	Details       Details `json:"details"`
+	Description   string  `json:"description"`
+	Metadata      string  `json:"metadata"`
+	RecipientCode string  `json:"recipient_code"`
+	Active        bool    `json:"active"`
+	ID            int     `json:"id"`
+	Integration   int     `json:"integration"`
+	CreatedAt     string  `json:"createdAt"`
+	UpdatedAt     string  `json:"updatedAt"`
+}
+
+// Details represents the details of the recipient.
+type Details struct {
+	AccountNumber string `json:"account_number"`
+	AccountName   string `json:"account_name"`
+	BankCode      string `json:"bank_code"`
+	BankName      string `json:"bank_name"`
+}
+
+// ListTransfersResponse represents the response from the Paystack API for listing transfers.
+type ListTransfersResponse struct {
+	Status  bool        `json:"status"`
+	Message string      `json:"message"`
+	Data    []Transfers `json:"data"`
+	Meta    Meta        `json:"meta"`
+}
+
+// Meta represents the pagination metadata for listing transfers.
+type Meta struct {
+	Total     int `json:"total"`
+	Skipped   int `json:"skipped"`
+	PerPage   int `json:"perPage"`
+	Page      int `json:"page"`
+	PageCount int `json:"pageCount"`
+}
+
+// FetchTransferResponse represents the response from the Paystack API for fetching a transfer.
+type FetchTransferResponse struct {
+	Status  bool      `json:"status"`
+	Message string    `json:"message"`
+	Data    Transfers `json:"data"`
+}

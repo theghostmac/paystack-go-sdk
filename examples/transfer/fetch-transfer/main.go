@@ -15,16 +15,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	reqData := paystack_transfers.FinalizeTransferRequest{
-		TransferCode: "TRF_vsyqdmlzble3uii",
-		OTP:          "928783",
-	}
+	idOrCode := "TRF_2x5j67tnnw1t98k" // Use a valid transfer ID or code
 
-	resp, err := paystack_transfers.FinalizeTransfer(client, reqData)
+	resp, err := paystack_transfers.FetchTransfer(client, idOrCode)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Transfers Code: %s\n", resp.Data.TransferCode)
-	fmt.Printf("Status: %s\n", resp.Data.Status)
+	fmt.Printf("Transfer: %v\n", resp.Data)
 }

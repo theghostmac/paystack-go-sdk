@@ -27,6 +27,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Transfer Code: %s\n", resp.Data.TransferCode)
+	fmt.Printf("Transfers Code: %s\n", resp.Data.TransferCode)
 	fmt.Printf("Status: %s\n", resp.Data.Status)
 }

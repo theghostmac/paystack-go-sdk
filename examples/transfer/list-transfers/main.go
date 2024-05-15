@@ -15,16 +15,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	reqData := paystack_transfers.FinalizeTransferRequest{
-		TransferCode: "TRF_vsyqdmlzble3uii",
-		OTP:          "928783",
+	queryParams := map[string]string{
+		"perPage": "50",
+		"page":    "1",
 	}
 
-	resp, err := paystack_transfers.FinalizeTransfer(client, reqData)
+	resp, err := paystack_transfers.ListTransfers(client, queryParams)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Transfers Code: %s\n", resp.Data.TransferCode)
-	fmt.Printf("Status: %s\n", resp.Data.Status)
+	for _, transfer := range resp.Data {
+		fmt.Printf("Transfer: %v\n", transfer)
+	}
 }

@@ -44,7 +44,7 @@ func main() {
 	}
 
 	for _, transfer := range resp.Data {
-		fmt.Printf("Transfer Reference: %s\n", transfer.Reference)
+		fmt.Printf("Transfers Reference: %s\n", transfer.Reference)
 		fmt.Printf("Status: %s\n", transfer.Status)
 	}
 }

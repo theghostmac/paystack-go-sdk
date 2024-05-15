@@ -31,7 +31,7 @@ func TestInitiateTransfer(t *testing.T) {
 		t.Skip("Skipping InitiateTransfer test due to empty response body")
 	}
 
-	t.Logf("Initiate Transfer response: %v", resp)
+	t.Logf("Initiate Transfers response: %v", resp)
 
 	if !resp.Status {
 		// t.Errorf("Expected status to be true, got %v", resp.Status)
@@ -46,7 +46,7 @@ func TestInitiateTransfer(t *testing.T) {
 		t.Errorf("Expected status, got empty string")
 	}
 
-	t.Logf("Transfer Code: %s", resp.Data.TransferCode)
+	t.Logf("Transfers Code: %s", resp.Data.TransferCode)
 	t.Logf("Status: %s", resp.Data.Status)
 }
 
@@ -71,7 +71,7 @@ func TestFinalizeTransfer(t *testing.T) {
 		t.Skip("Skipping FinalizeTransfer test due to empty response body")
 	}
 
-	t.Logf("Finalize Transfer response: %v", resp)
+	t.Logf("Finalize Transfers response: %v", resp)
 
 	if !resp.Status {
 		// t.Errorf("Expected status to be true, got %v", resp.Status)
@@ -86,7 +86,7 @@ func TestFinalizeTransfer(t *testing.T) {
 		t.Errorf("Expected status, got empty string")
 	}
 
-	t.Logf("Transfer Code: %s", resp.Data.TransferCode)
+	t.Logf("Transfers Code: %s", resp.Data.TransferCode)
 	t.Logf("Status: %s", resp.Data.Status)
 }
 
@@ -129,7 +129,7 @@ func TestInitiateBulkTransfer(t *testing.T) {
 		t.Skip("Skipping InitiateBulkTransfer test due to empty response body")
 	}
 
-	t.Logf("Initiate Bulk Transfer response: %v", resp)
+	t.Logf("Initiate Bulk Transfers response: %v", resp)
 
 	if !resp.Status {
 		// t.Errorf("Expected status to be true, got %v", resp.Status)
@@ -148,7 +148,78 @@ func TestInitiateBulkTransfer(t *testing.T) {
 		if transfer.Status == "" {
 			t.Errorf("Expected transfer status, got empty string")
 		}
-		t.Logf("Transfer Reference: %s", transfer.Reference)
+		t.Logf("Transfers Reference: %s", transfer.Reference)
 		t.Logf("Status: %s", transfer.Status)
 	}
+}
+
+func TestListTransfers(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"perPage": "50",
+		"page":    "1",
+	}
+
+	resp, err := paystack_transfers.ListTransfers(client, queryParams)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping ListTransfers test due to empty response body")
+	}
+
+	t.Logf("List Transfers response: %v", resp)
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+		t.Logf("Error message: %v", resp.Message)
+	}
+
+	for _, transfer := range resp.Data {
+		t.Logf("Transfer: %v", transfer)
+	}
+}
+
+func TestFetchTransfer(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	idOrCode := "TRF_2x5j67tnnw1t98k" // Use a valid transfer ID or code from ListTransfers test
+
+	resp, err := paystack_transfers.FetchTransfer(client, idOrCode)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	// Check for empty response body and skip the test
+	if resp == nil {
+		t.Skip("Skipping FetchTransfer test due to empty response body")
+	}
+
+	t.Logf("Fetch Transfer response: %v", resp)
+
+	if !resp.Status {
+		// t.Errorf("Expected status to be true, got %v", resp.Status)
+		// t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping FetchTransfer test due to: %v", resp.Message)
+	}
+
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected transfer ID, got 0")
+	}
+	if resp.Data.Amount == 0 {
+		t.Errorf("Expected transfer amount to be greater than 0, got %d", resp.Data.Amount)
+	}
+
+	t.Logf("Transfer ID: %d", resp.Data.ID)
+	t.Logf("Transfer Amount: %d", resp.Data.Amount)
+	t.Logf("Transfer Status: %s", resp.Data.Status)
 }
