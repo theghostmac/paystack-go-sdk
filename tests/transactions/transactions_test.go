@@ -55,3 +55,27 @@ func TestVerifyTransaction(t *testing.T) {
 		t.Errorf("Expected transaction ID, got 0")
 	}
 }
+
+func TestListTransactions(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"perPage": "2",
+		"page":    "1",
+	}
+
+	resp, err := paystack_transactions.ListTransactions(client, queryParams)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if !resp.Status {
+		t.Errorf("Expected status to be true, got %v", resp.Status)
+	}
+	if len(resp.Data) == 0 {
+		t.Errorf("Expected transactions, got none")
+	}
+}

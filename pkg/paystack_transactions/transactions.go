@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
 	"net/http"
+	"net/url"
 )
 
 // InitializeTransaction represents the request body for initializing a transaction.
@@ -68,6 +69,49 @@ func VerifyTransaction(client *paystack_client.Client, reference string) (*Verif
 
 	// Decode the response body
 	var respData VerifyTransactionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// ListTransactions lists transactions carried out on your integration.
+// It takes the client and optional query parameters as arguments and returns the list of transactions.
+func ListTransactions(client *paystack_client.Client, queryParams map[string]string) (*ListTransactionsResponse, error) {
+	baseURL := "https://api.paystack.co/transaction"
+
+	// Parse the base URL
+	url, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
+	}
+
+	// Add query parameters to the URL
+	q := url.Query()
+	for key, value := range queryParams {
+		q.Add(key, value)
+	}
+	url.RawQuery = q.Encode()
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData ListTransactionsResponse
 	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
 		return nil, fmt.Errorf("failed to decode response body: %w", err)
 	}
