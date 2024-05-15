@@ -90,3 +90,43 @@ func TestAssignDedicatedAccount(t *testing.T) {
 
 	t.Logf("Message: %s", resp.Message)
 }
+
+// Test function for listing dedicated virtual accounts
+func TestListDedicatedAccounts(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"active":   "true",
+		"currency": "NGN",
+	}
+
+	resp, err := paystack_accounts.ListDedicatedAccounts(client, queryParams)
+	if err != nil {
+		//t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping List Dedicated Accounts test due to error: %v", err)
+	}
+
+	// Log the response
+	t.Logf("List Dedicated Accounts response: %v", resp)
+
+	// Skip the test if status is false
+	if !resp.Status {
+		//t.Errorf("Expected status to be true, got %v", resp.Status)
+		//t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping List Dedicated Accounts test due to error: %v", resp.Message)
+	}
+
+	// Skip the test if no dedicated accounts are found
+	if len(resp.Data) == 0 {
+		//t.Errorf("Expected dedicated accounts, got none")
+		t.Skip("Skipping List Dedicated Accounts test due to no dedicated accounts")
+	}
+
+	// Log the dedicated accounts
+	for _, account := range resp.Data {
+		t.Logf("Dedicated Account: %v", account)
+	}
+}

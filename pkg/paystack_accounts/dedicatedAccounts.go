@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
 	"net/http"
+	"net/url"
 )
 
 // CreateDedicatedAccount creates a dedicated virtual account for an existing customer.
@@ -69,6 +70,47 @@ func AssignDedicatedAccount(client *paystack_client.Client, reqData AssignDedica
 
 	// Decode the response body
 	var respData AssignDedicatedAccountResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// ListDedicatedAccounts lists dedicated virtual accounts available on your integration.
+// It takes the client and query parameters as arguments and returns the list of dedicated virtual accounts.
+func ListDedicatedAccounts(client *paystack_client.Client, queryParams map[string]string) (*ListDedicatedAccountsResponse, error) {
+	baseURL := "https://api.paystack.co/dedicated_account"
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
+	}
+
+	// Add query parameters to URL
+	q := u.Query()
+	for key, value := range queryParams {
+		q.Set(key, value)
+	}
+	u.RawQuery = q.Encode()
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData ListDedicatedAccountsResponse
 	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
 		return nil, fmt.Errorf("failed to decode response body: %w", err)
 	}

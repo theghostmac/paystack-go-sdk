@@ -61,3 +61,47 @@ type AssignDedicatedAccountResponse struct {
 	Status  bool   `json:"status"`
 	Message string `json:"message"`
 }
+
+// DedicatedAccount represents a dedicated virtual account.
+type DedicatedAccount struct {
+	Customer struct {
+		ID                       int    `json:"id"`
+		FirstName                string `json:"first_name"`
+		LastName                 string `json:"last_name"`
+		Email                    string `json:"email"`
+		CustomerCode             string `json:"customer_code"`
+		Phone                    string `json:"phone"`
+		RiskAction               string `json:"risk_action"`
+		InternationalFormatPhone string `json:"international_format_phone"`
+	} `json:"customer"`
+	Bank struct {
+		Name string `json:"name"`
+		ID   int    `json:"id"`
+		Slug string `json:"slug"`
+	} `json:"bank"`
+	ID            int    `json:"id"`
+	AccountName   string `json:"account_name"`
+	AccountNumber string `json:"account_number"`
+	CreatedAt     string `json:"created_at"`
+	UpdatedAt     string `json:"updated_at"`
+	Currency      string `json:"currency"`
+	SplitConfig   struct {
+		Subaccount string `json:"subaccount"`
+	} `json:"split_config"`
+	Active   bool `json:"active"`
+	Assigned bool `json:"assigned"`
+}
+
+// ListDedicatedAccountsResponse represents the response from the Paystack API for listing dedicated virtual accounts.
+type ListDedicatedAccountsResponse struct {
+	Status  bool               `json:"status"`
+	Message string             `json:"message"`
+	Data    []DedicatedAccount `json:"data"`
+	Meta    struct {
+		Total     int `json:"total"`
+		Skipped   int `json:"skipped"`
+		PerPage   int `json:"perPage"`
+		Page      int `json:"page"`
+		PageCount int `json:"pageCount"`
+	} `json:"meta"`
+}
