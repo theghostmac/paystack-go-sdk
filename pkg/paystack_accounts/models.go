@@ -105,3 +105,58 @@ type ListDedicatedAccountsResponse struct {
 		PageCount int `json:"pageCount"`
 	} `json:"meta"`
 }
+
+// FetchDedicatedAccountResponse represents the response from the Paystack API for fetching a dedicated virtual account.
+type FetchDedicatedAccountResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    struct {
+		Transactions          []interface{} `json:"transactions"`
+		Subscriptions         []interface{} `json:"subscriptions"`
+		Authorizations        []interface{} `json:"authorizations"`
+		FirstName             string        `json:"first_name"`
+		LastName              string        `json:"last_name"`
+		Email                 string        `json:"email"`
+		Phone                 string        `json:"phone"`
+		Metadata              interface{}   `json:"metadata"`
+		Domain                string        `json:"domain"`
+		CustomerCode          string        `json:"customer_code"`
+		RiskAction            string        `json:"risk_action"`
+		ID                    int           `json:"id"`
+		Integration           int           `json:"integration"`
+		CreatedAt             string        `json:"createdAt"`
+		UpdatedAt             string        `json:"updatedAt"`
+		CreatedAtAlt          string        `json:"created_at"`
+		UpdatedAtAlt          string        `json:"updated_at"`
+		TotalTransactions     int           `json:"total_transactions"`
+		TotalTransactionValue []interface{} `json:"total_transaction_value"`
+		DedicatedAccount      struct {
+			ID            int    `json:"id"`
+			AccountName   string `json:"account_name"`
+			AccountNumber string `json:"account_number"`
+			CreatedAt     string `json:"created_at"`
+			UpdatedAt     string `json:"updated_at"`
+			Currency      string `json:"currency"`
+			Active        bool   `json:"active"`
+			Assigned      bool   `json:"assigned"`
+			Provider      struct {
+				ID           int    `json:"id"`
+				ProviderSlug string `json:"provider_slug"`
+				BankID       int    `json:"bank_id"`
+				BankName     string `json:"bank_name"`
+			} `json:"provider"`
+			Assignment struct {
+				AssigneeID   int    `json:"assignee_id"`
+				AssigneeType string `json:"assignee_type"`
+				AccountType  string `json:"account_type"`
+				Integration  int    `json:"integration"`
+			} `json:"assignment"`
+		} `json:"dedicated_account"`
+	} `json:"data"`
+}
+
+// RequeryDedicatedAccountResponse represents the response from the Paystack API for requerying a dedicated virtual account.
+type RequeryDedicatedAccountResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+}

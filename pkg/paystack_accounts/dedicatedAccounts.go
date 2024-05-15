@@ -117,3 +117,74 @@ func ListDedicatedAccounts(client *paystack_client.Client, queryParams map[strin
 
 	return &respData, nil
 }
+
+// FetchDedicatedAccount fetches the details of a dedicated virtual account on your integration.
+// It takes the client and dedicated account ID as arguments and returns the account details.
+func FetchDedicatedAccount(client *paystack_client.Client, dedicatedAccountID int) (*FetchDedicatedAccountResponse, error) {
+	url := fmt.Sprintf("https://api.paystack.co/dedicated_account/%d", dedicatedAccountID)
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData FetchDedicatedAccountResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}
+
+// RequeryDedicatedAccount requeries a dedicated virtual account for new transactions.
+// It takes the client and query parameters as arguments and returns the requery status.
+func RequeryDedicatedAccount(client *paystack_client.Client, queryParams map[string]string) (*RequeryDedicatedAccountResponse, error) {
+	baseURL := "https://api.paystack.co/dedicated_account/requery"
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
+	}
+
+	// Add query parameters to URL
+	q := u.Query()
+	for key, value := range queryParams {
+		q.Set(key, value)
+	}
+	u.RawQuery = q.Encode()
+
+	// Create the HTTP request
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+client.APIKey)
+
+	// Perform the HTTP request
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body
+	var respData RequeryDedicatedAccountResponse
+	if err := json.NewDecoder(resp.Body).Decode(&respData); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	return &respData, nil
+}

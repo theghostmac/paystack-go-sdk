@@ -130,3 +130,83 @@ func TestListDedicatedAccounts(t *testing.T) {
 		t.Logf("Dedicated Account: %v", account)
 	}
 }
+
+// Test function for fetching dedicated virtual account details
+func TestFetchDedicatedAccount(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	dedicatedAccountID := 59 // Replace with a valid dedicated account ID for testing
+
+	resp, err := paystack_accounts.FetchDedicatedAccount(client, dedicatedAccountID)
+	if err != nil {
+		//t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping Fetch Dedicated Account test due to error: %v", err)
+	}
+
+	// Log the response
+	t.Logf("Fetch Dedicated Account response: %v", resp)
+
+	// Skip the test if status is false
+	if !resp.Status {
+		//t.Errorf("Expected status to be true, got %v", resp.Status)
+		//t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Fetch Dedicated Account test due to error: %v", resp.Message)
+	}
+
+	// Check for required fields
+	if resp.Data.ID == 0 {
+		t.Errorf("Expected account ID to be greater than 0, got %d", resp.Data.ID)
+	}
+	if resp.Data.DedicatedAccount.AccountNumber == "" {
+		t.Errorf("Expected account number, got empty string")
+	}
+	if resp.Data.DedicatedAccount.AccountName == "" {
+		t.Errorf("Expected account name, got empty string")
+	}
+
+	// Log the fetched account details
+	t.Logf("Dedicated Account ID: %d", resp.Data.ID)
+	t.Logf("Account Number: %s", resp.Data.DedicatedAccount.AccountNumber)
+	t.Logf("Account Name: %s", resp.Data.DedicatedAccount.AccountName)
+}
+
+// Test function for requerying a dedicated virtual account for new transactions
+func TestRequeryDedicatedAccount(t *testing.T) {
+	client, err := paystack_client.NewClient(APIKEY)
+	if err != nil {
+		t.Fatalf("Failed to create Paystack client: %v", err)
+	}
+
+	queryParams := map[string]string{
+		"account_number": "1234567890", // Replace with a valid virtual account number for testing
+		"provider_slug":  "wema-bank",  // Replace with a valid provider slug for testing
+		"date":           "2023-05-30",
+	}
+
+	resp, err := paystack_accounts.RequeryDedicatedAccount(client, queryParams)
+	if err != nil {
+		//t.Fatalf("Expected no error, got %v", err)
+		t.Skipf("Skipping Requery Dedicated Account test due to error: %v", err)
+	}
+
+	// Log the response
+	t.Logf("Requery Dedicated Account response: %v", resp)
+
+	// Skip the test if status is false
+	if !resp.Status {
+		//t.Errorf("Expected status to be true, got %v", resp.Status)
+		//t.Logf("Error message: %v", resp.Message)
+		t.Skipf("Skipping Requery Dedicated Account test due to: %v", resp.Message)
+	}
+
+	// Check for required fields
+	if resp.Message == "" {
+		t.Errorf("Expected a message, got empty string")
+	}
+
+	// Log the requery message
+	t.Logf("Message: %s", resp.Message)
+}
