@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_customer"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_client"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_customer"
 )
 
 func main() {

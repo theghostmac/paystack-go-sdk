@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_client"
 	"io/ioutil"
 	"net/http"
 	"net/url"

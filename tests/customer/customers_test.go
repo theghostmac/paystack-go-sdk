@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_customer"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_client"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_customer"
 )
 
 const APIKEY = "sk_test_ac242d5adb6d973061aff9539330e02581fe9c14"

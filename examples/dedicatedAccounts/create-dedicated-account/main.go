@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_accounts"
-	"github.com/theghostmc/paystack-go-sdk/pkg/paystack_client"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_accounts"
+	"github.com/theghostmac/paystack-go-sdk/pkg/paystack_client"
 )
 
 func main() {

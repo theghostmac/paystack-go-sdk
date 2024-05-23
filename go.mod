@@ -1,3 +1,3 @@
-module github.com/theghostmc/paystack-go-sdk
+module github.com/theghostmac/paystack-go-sdk
 
 go 1.22.0
